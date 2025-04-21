@@ -7,10 +7,22 @@ module.exports = {
       colors: {
         blue: {
           100: "#F1FBFF",
+          500: "#4F46E5",
           700: "#07577A",
         },
         red: {
           500: "#EB6578",
+        },
+        grey: {
+          100: "#E4E4E7",
+          200: "#FAFAFB",
+          700: "#71717A",
+        },
+        dark: {
+          300: "#3F3F46",
+        },
+        yellow: {
+          500: "#FEE02A",
         },
       },
       fontSize: {
