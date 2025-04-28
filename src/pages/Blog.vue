@@ -23,7 +23,7 @@
             :show-upload-list="{ showPreviewIcon: false }"
             :before-upload="handleBeforeUpload"
           >
-            <div v-if="form.fileList.length === 0">
+            <div v-if="form?.fileList.length === 0">
               <div class="flex flex-col items-center gap-0 text-grey-700">
                 <span class="text-2xl font-semibold">+</span>
                 <span class="text-sm">Добавить</span>
@@ -41,25 +41,18 @@
         </a-form-item>
 
         <a-form-item label="Описание" name="content" class="w-full mb-4">
-          <editor
-            api-key="2e6sys1khzjzlqhj5fk4hwvqs7yif539ijzy6nwawcbkcz1g"
-            v-model="form.content"
-            :init="{
-              height: 400,
-              toolbar_mode: 'sliding',
-              menubar: false,
-              plugins:
-                'anchor autolink charmap codesample emoticons image link lists searchreplace table visualblocks wordcount image',
-              toolbar:
-                'undo redo | blocks fontfamily fontsize | bold italic underline | link image | align | numlist bullist',
-              automatic_uploads: true,
-              images_upload_handler: async (blobInfo, success) => {
-                const base64 = blobInfo.base64();
-                const mime = blobInfo.blob().type;
-                const url = `data:${mime};base64,${base64}`;
-                success(url);
-              },
-            }"
+          <QuillEditor
+            v-model:content="form.content"
+            contentType="html"
+            :toolbar="[
+              ['bold', 'italic', 'underline', 'strike'],
+              [{ color: [] }],
+              [{ header: 1 }, { header: 2 }],
+              [{ list: 'ordered' }, { list: 'bullet' }],
+              ['image'],
+              ['clean'],
+            ]"
+            style="height: 400px"
           />
         </a-form-item>
         <div class="flex justify-end">
@@ -78,7 +71,8 @@
 <script setup>
 import { ref, reactive, watch } from "vue";
 import { message } from "ant-design-vue";
-import Editor from "@tinymce/tinymce-vue";
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import useBlog from "@/stores/blog.pinia";
 import useCore from "@/stores/core.pinia";
 import { useRoute, useRouter } from "vue-router";
@@ -93,9 +87,9 @@ const { blog } = storeToRefs(blogPinia);
 const { loadingUrl } = storeToRefs(corePinia);
 
 const form = reactive({
-  title: "1",
+  title: "",
   fileList: [],
-  content: "1",
+  content: "",
 });
 
 watch(
@@ -171,50 +165,15 @@ function goTop() {
   router.push("/blogs");
 }
 
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-}
-
 const addBlog = async () => {
   try {
     await formRef.value.validate();
-    // const images = await Promise.all(
-    //   form.fileList.map(async (file) => {
-    //     if (file.url) {
-    //       return file.url;
-    //     } else if (file.originFileObj) {
-    //       return await toBase64(file.originFileObj);
-    //     }
-    //     return null;
-    //   })
-    // );
 
-    // const filteredImages = images.filter(Boolean);
     if (!route.query.id) {
-      const images = await Promise.all(
-        form.fileList.map(async (file) => {
-          if (file.url) {
-            return { image: file.url }; // URL bo'lsa, 'image' kalitiga url qiymatini beradi
-          } else if (file.thumbUrl) {
-            return { image: file.thumbUrl }; // 'thumbUrl' bo'lsa, 'image' kalitiga thumbUrl qiymatini beradi
-          } else if (file.originFileObj) {
-            return { image: await toBase64(file.originFileObj) }; // 'originFileObj' bo'lsa, uni Base64 formatiga o'zgartirib 'image' kalitiga beradi
-          }
-          return null; // Hech narsa bo'lmasa, null qaytariladi
-        })
-      );
-
-      const filteredImages = images.filter(Boolean);
-      console.log(filteredImages);
       blogPinia.postBlog(
         {
           title: form.title,
-          images: filteredImages,
+          images: form.fileList[0].originFileObj,
           status: "active",
           description: form.content,
         },
@@ -226,11 +185,10 @@ const addBlog = async () => {
         }
       );
     } else {
-      console.log("sa");
       blogPinia.editBlog(
         {
           title: form.title,
-          images: { id: blog.value.images?.[0]?.id, image: filteredImages },
+          images: form.fileList[0].originFileObj,
           status: "active",
           description: form.content,
         },

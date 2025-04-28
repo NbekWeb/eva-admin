@@ -14,10 +14,17 @@ const useBlog = defineStore("blog", {
     postBlog(data, callback) {
       const core = useCore();
       core.loadingUrl.add("blogs/");
+      const formData = new FormData();
+      for (const key in data) {
+        formData.append(key, data[key]);
+      }
       api({
         url: "blogs/",
         method: "POST",
-        data,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        data: formData,
       })
         .then(() => {
           message.success("Блог успешно добавлен!");
@@ -33,10 +40,17 @@ const useBlog = defineStore("blog", {
     editBlog(data, id, callback) {
       const core = useCore();
       core.loadingUrl.add("blogs/edit");
+      const formData = new FormData();
+      for (const key in data) {
+        formData.append(key, data[key]);
+      }
       api({
         url: `blogs/${id}/`,
         method: "PUT",
-        data,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        data: formData,
       })
         .then(() => {
           message.success("Блог успешно отредактирован!");
@@ -48,6 +62,17 @@ const useBlog = defineStore("blog", {
         .finally(() => {
           core.loadingUrl.delete("blogs/edit");
         });
+      function base64ToFile(base64String, filename) {
+        const arr = base64String.split(",");
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, { type: mime });
+      }
     },
     editPrice(data, id, callback) {
       const core = useCore();
@@ -94,8 +119,8 @@ const useBlog = defineStore("blog", {
         url: "prices/",
         method: "GET",
       })
-        .then(({data}) => {
-          this.prices=data
+        .then(({ data }) => {
+          this.prices = data;
           callback();
         })
         .catch((error) => {

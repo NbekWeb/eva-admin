@@ -197,7 +197,7 @@ onMounted(() => {
       </div>
       <div class="mt-10 grid-cols-3 gap-7 grid max-lg:grid-cols-1">
         <div
-          class="p-5 bg-white border border-grey-100 rounded-xl col-span-2 max-h-[400px]"
+          class="p-5 bg-white border border-grey-100 rounded-xl col-span-2 max-h-[400px] max-lg:col-span-1"
         >
           <div class="flex justify-between items-center">
             <span class="font-semibold text-dark-180 text-base"> Оплаты </span>
