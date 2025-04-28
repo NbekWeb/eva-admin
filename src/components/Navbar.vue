@@ -2,15 +2,15 @@
 import { useRoute, useRouter } from "vue-router";
 import SearchIcon from "./icons/Search.vue";
 import Logout from "./icons/Logout.vue";
+import Mobile from "./Mobile.vue";
 
 const route = useRoute();
 const router = useRouter();
 
-// Create a list of links
 const links = [
-  { name: "home", label: "Меню", to: "/" },
-  { name: "blog", label: "Блог", to: "/blog" },
-  { name: "price", label: "Пакет", to: "/price" },
+  { name: "home", label: "Дашборд ", to: "/" },
+  { name: "blogs", label: "Блог", to: "/blogs" },
+  { name: "prices", label: "Пакет", to: "/prices" },
 ];
 
 function logOut() {
@@ -21,12 +21,13 @@ function logOut() {
 
 <template>
   <div class="flex items-center border-b py-1.5 navbar bg-white">
-    <div class="container px-2.5 mx-auto flex gap-12 items-center">
+    <div class="container px-2.5 mx-auto flex gap-12 items-center max-md:justify-between">
+      <Mobile />
       <router-link to="/">
-        <img src="@/assets/img/logo.svg" class="object-contain h-9 min-w-max" />
+        <img src="@/assets/img/logo.svg" class="object-contain h-9 min-w-max max-md:h-6" />
       </router-link>
       <div
-        class="flex text-dark-300 items-center py-2.5 px-4 rounded-2xl border border-grey-100 gap-6 text-sm font-semibold capitalize"
+        class="flex max-md:hidden text-dark-300 items-center py-2.5 px-4 rounded-2xl border border-grey-100 gap-6 text-sm font-semibold capitalize"
       >
         <router-link
           v-for="link in links"
@@ -42,22 +43,19 @@ function logOut() {
           {{ link.label }}
         </router-link>
       </div>
-      <a-input
-        v-model:value="userName"
-        placeholder="Поиск"
-        class="h-10 max-w-[600px] hidden"
-      >
+      <a-input placeholder="Поиск" class="h-10 max-w-[600px] hidden">
         <template #prefix>
           <search-icon class="text-grey-700" />
         </template>
       </a-input>
       <div
         @click="logOut"
-        class="flex items-center gap-1 ml-auto text-2xl font-semibold text-dark-300 hover:cursor-pointer"
+        class="flex items-center gap-1 ml-auto text-2xl font-semibold text-dark-300 hover:cursor-pointer max-md:ml-0"
       >
         <Logout />
         <span class="text-lg">Выйти</span>
       </div>
+   
     </div>
   </div>
 </template>

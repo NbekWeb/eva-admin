@@ -6,6 +6,8 @@ import { message } from "ant-design-vue";
 const usePayment = defineStore("payment", {
   state: () => ({
     staticData: {},
+    requests:[],
+    messages:[],
   }),
   actions: {
     getStatic(params) {
@@ -22,6 +24,36 @@ const usePayment = defineStore("payment", {
         .catch((error) => {})
         .finally(() => {
           core.loadingUrl.delete("chat/payment/statistics/");
+        });
+    },
+    getRequestStatic() {
+      const core = useCore();
+      core.loadingUrl.add("requests/");
+      api({
+        url: "chat/user/statistics/",
+        method: "GET",
+      })
+        .then(({ data }) => {
+          this.requests=data
+        })
+        .catch((error) => {})
+        .finally(() => {
+          core.loadingUrl.delete("requests/");
+        });
+    },
+    getMessage() {
+      const core = useCore();
+      core.loadingUrl.add("message/");
+      api({
+        url: "chat/message/statistics/",
+        method: "GET",
+      })
+        .then(({ data }) => {
+          this.messages=data
+        })
+        .catch((error) => {})
+        .finally(() => {
+          core.loadingUrl.delete("message/");
         });
     },
   },

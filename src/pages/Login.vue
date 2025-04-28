@@ -50,7 +50,7 @@ const onSubmit = async () => {
           :model="form"
           :rules="rules"
           @finish="onSubmit"
-          class="max-w-md mt-4"
+          class=" mt-4 w-[400px] max-sm:w-full"
         >
           <a-form-item label="Имя пользователя" name="identifier">
             <a-input
