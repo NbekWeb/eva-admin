@@ -57,7 +57,13 @@ const matchedPrice = computed(() =>
             : 'text-red-500'
         "
       >
-        Успешно {{ data?.status }}
+        {{
+          data?.status == "success"
+            ? "Успешно"
+            : data?.status == "pending"
+            ? "В ожидании"
+            : "Ошибка"
+        }}
       </span>
     </div>
     <span class="font-semibold"> {{ data?.card?.card_number }}</span>
