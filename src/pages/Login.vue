@@ -35,7 +35,7 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div class="grid min-h-screen grid-cols-2 auth max-lg:grid-cols-1">
+  <div class="grid min-h-screen grid-cols-2 auth max-lg:grid-cols-1 bg-blue-100">
     <div class="flex flex-col items-center justify-center max-h-full">
       <div class="py-10 min-h-max max-sm:py-7">
         <h2
@@ -50,7 +50,7 @@ const onSubmit = async () => {
           :model="form"
           :rules="rules"
           @finish="onSubmit"
-          class=" mt-4 w-[400px] max-sm:w-full"
+          class="mt-4 w-[400px] max-sm:w-full"
         >
           <a-form-item label="Имя пользователя" name="identifier">
             <a-input
@@ -72,10 +72,12 @@ const onSubmit = async () => {
         </a-form>
       </div>
     </div>
-    <div class="relative w-full max-lg:hidden">
+    <div
+      class="relative w-full max-lg:hidden bg-white flex items-center justify-center"
+    >
       <img
-        src="@/assets/img/auth.png"
-        class="fixed top-0 right-0 object-cover w-1/2 h-screen rounded-l-3xl"
+        src="@/assets/img/auth.jpg"
+        class="object-contain w-auto h-1/2"
         loading="lazy"
       />
     </div>
