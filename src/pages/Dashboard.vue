@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from "vue";
 import usePayment from "@/stores/payment.pinia";
 import useCore from "@/stores/core.pinia";
+import useBlog from "@/stores/blog.pinia";
 import { storeToRefs } from "pinia";
 import * as echarts from "echarts";
 import html2canvas from "html2canvas";
@@ -10,12 +11,14 @@ import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import upload from "@/components/icons/upload.vue";
 import requestCard from "@/components/requestCard.vue";
+import paymentCard from "@/components/paymentCard.vue";
 
 dayjs.locale("ru");
 
 const paymentPinia = usePayment();
 const corePinia = useCore();
-const { staticData, requests, messages } = storeToRefs(paymentPinia);
+const blogPinia = useBlog();
+const { staticData, requests, messages, payments } = storeToRefs(paymentPinia);
 const { loadingUrl } = storeToRefs(corePinia);
 
 const chartRef = ref(null);
@@ -128,6 +131,8 @@ const exportToPDF = async () => {
 onMounted(() => {
   paymentPinia.getRequestStatic();
   paymentPinia.getMessage();
+  paymentPinia.getPayment();
+  blogPinia.getPrices(() => {});
 });
 </script>
 
@@ -139,10 +144,10 @@ onMounted(() => {
   >
     <div class="container mx-auto px-2.5 overflow-x-hidden">
       <div class="grid grid-cols-3 gap-7 max-lg:grid-cols-1">
-        <div class="col-span-2 overflow-x-auto max-lg:col-span-1 rounded-xl border border-grey-100 p-5 bg-white ">
-          <div
-            class=" flex flex-col min-w-[650px]"
-          >
+        <div
+          class="col-span-2 overflow-x-auto max-lg:col-span-1 rounded-xl border border-grey-100 p-5 bg-white"
+        >
+          <div class="flex flex-col min-w-[650px]">
             <div class="flex justify-between">
               <span class="font-semibold text-dark-180 text-base">
                 Продажы
@@ -182,14 +187,14 @@ onMounted(() => {
             </span>
             <div class="flex flex-col gap-1 w-full text-sm text-dark-180">
               <div
-                class="flex w-full justify-between items-center gap-4 "
+                class="flex w-full justify-between items-center gap-4"
                 v-for="item in messages"
                 :key="item.id"
               >
                 <span class="truncate">{{ item?.messages_info?.[0] }}</span>
-                <span class="text-xs text-grey-300 min-w-max">{{
-                  item?.messages_count
-                }} Раз</span>
+                <span class="text-xs text-grey-300 min-w-max"
+                  >{{ item?.messages_count }} Раз</span
+                >
               </div>
             </div>
           </div>
@@ -197,14 +202,19 @@ onMounted(() => {
       </div>
       <div class="mt-10 grid-cols-3 gap-7 grid max-lg:grid-cols-1">
         <div
-          class="p-5 bg-white border border-grey-100 rounded-xl col-span-2 max-h-[400px] max-lg:col-span-1"
+          class="p-5 overflow-y-auto bg-white border border-grey-100 rounded-xl col-span-2 max-h-[400px] max-lg:col-span-1"
         >
-          <div class="flex justify-between items-center">
+          <div class="flex flex-col gap-0">
             <span class="font-semibold text-dark-180 text-base"> Оплаты </span>
+            <div class="flex flex-col">
+              <template v-for="item in payments">
+                <paymentCard :data="item" />
+              </template>
+            </div>
           </div>
         </div>
         <div
-          class="py-5 flex flex-col gap-5 bg-white border border-grey-100 rounded-xl max-h-[400px]"
+          class="py-5 flex flex-col gap-5 bg-white border border-grey-100 overflow-y-auto rounded-xl max-h-[400px]"
         >
           <span class="font-semibold text-dark-180 text-base px-5">
             Статистике запросов

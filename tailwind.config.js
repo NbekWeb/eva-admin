@@ -30,6 +30,7 @@ module.exports = {
         green: {
           100: "#ECFDF3",
           500: "#12B76A",
+          600: "#14532D",
         },
         yellow: {
           100: "rgba(225, 209, 25, 0.22)",
