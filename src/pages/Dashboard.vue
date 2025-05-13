@@ -207,8 +207,8 @@ onMounted(() => {
           <div class="flex flex-col gap-0">
             <span class="font-semibold text-dark-180 text-base"> Оплаты </span>
             <div class="flex flex-col">
-              <template v-for="item in payments">
-                <paymentCard :data="item" />
+              <template v-for="(item, i) in payments">
+                <paymentCard :data="item" :first="i == 0" />
               </template>
             </div>
           </div>

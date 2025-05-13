@@ -27,6 +27,7 @@ const matchedPrice = computed(() =>
 <template>
   <div
     class="w-full flex justify-between py-6 text-sm text-dark-180 items-center"
+    :class="!first && 'border-t border-grey-100'"
   >
     <div
       class="flex items-center gap-2 p-2 pr-5 rounded-3xl"

@@ -36,6 +36,7 @@ module.exports = {
           100: "rgba(225, 209, 25, 0.22)",
           500: "#FEE02A",
         },
+        
       },
       fontSize: {
         "3xl": "28px",
